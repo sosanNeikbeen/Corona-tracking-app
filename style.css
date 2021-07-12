@@ -1,0 +1,132 @@
+.body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  text-align: left;
+  background-color: #fff;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Quicksand", sans-serif;
+  font-style: normal;
+  margin-bottom: 0;
+  margin-top: 11px;
+  line-height: 1.2;
+  font-weight: 700;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+  font-size: 36px;
+}
+.h1,
+h1 {
+  font-size: 2.5rem;
+}
+
+.slider_area {
+  background-image: url(./assets/images/slider-1.jpeg);
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  min-height: 900px;
+  position: relative;
+}
+.slider {
+  height: 700px;
+}
+
+.slider_thumb {
+  position: relative;
+}
+
+.slider_thumb_inner {
+  position: absolute;
+  left: 42%;
+  bottom: -190px;
+}
+
+.slider_text_inner {
+  text-align: center;
+  color: #fff;
+  font-family: "Quicksand", sans-serif;
+}
+
+.slider_text_inner h1 {
+  margin: 0;
+  font-size: 50px;
+  color: #fff;
+}
+.slider_text_inner ul {
+  margin-top: 15px;
+}
+.slider_text_inner ul li {
+  display: inline;
+  font-size: 19px;
+  color: #fff;
+  margin: 0 7px;
+  font-family: "Quicksand", sans-serif;
+}
+.Slider_button {
+  text-align: center;
+}
+.pt-30 {
+  padding-top: 30px;
+}
+.Slider_button .button a {
+  background: #5fe60e;
+  color: #fff;
+  padding: 15px 35px;
+  font-weight: 500;
+  display: inline-block;
+  transition: 0.5s;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  border-radius: 5px;
+  display: inline-block;
+  text-decoration: none;
+}
+.slider_text_inner span {
+  color: #5fe60e;
+}
+.navbar-nav {
+  margin-left: auto;
+}
+.navbar {
+  background: transparent;
+  padding: 0px 50px 25px 50px;
+  transition: 0.5s;
+  margin-bottom: -174px;
+  z-index: 999;
+  position: relative;
+}
+
+.rotate {
+  animation: rotation 20s infinite linear;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+@media only screen and (min-width: 320px) and (max-width: 599px) {
+  .navbar {
+    background-color: #003569;
+  }
+  .slider {
+    height: 1000px;
+  }
+}
