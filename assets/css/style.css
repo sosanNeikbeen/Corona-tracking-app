@@ -32,15 +32,28 @@ h1 {
 }
 
 .slider_area {
-  background-image: url(./assets/images/slider-1.jpeg);
+  background-image: url(../images/slider-1.jpeg);
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
   min-height: 900px;
   position: relative;
 }
+
+.tabel-slider_area {
+  background-image: url(../images/slider-1.jpeg);
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  min-height: 1000px;
+  position: relative;
+}
 .slider {
   height: 700px;
+}
+
+.tabel-slider {
+  height: 1400px;
 }
 
 .slider_thumb {
@@ -80,6 +93,10 @@ h1 {
 .pt-30 {
   padding-top: 30px;
 }
+
+.pt-150 {
+  padding-top: 150px;
+}
 .Slider_button .button a {
   background: #5fe60e;
   color: #fff;
@@ -94,7 +111,7 @@ h1 {
   display: inline-block;
   text-decoration: none;
 }
-.slider_text_inner span {
+.slider_text_inner .cass_active {
   color: #5fe60e;
 }
 .navbar-nav {
@@ -113,6 +130,20 @@ h1 {
   animation: rotation 20s infinite linear;
 }
 
+.list-bg {
+  background-color: darkblue;
+}
+
+.bg-green {
+  background-color: rgba(0, 255, 0, 0.2) !important;
+}
+.bg-red {
+  background-color: rgba(255, 0, 0, 0.3) !important;
+}
+.bg-blue {
+  background-color: rgba(0, 255, 255, 0.3) !important;
+}
+
 @keyframes rotation {
   from {
     transform: rotate(0deg);
@@ -128,5 +159,8 @@ h1 {
   }
   .slider {
     height: 1000px;
+  }
+  .tabel-slider {
+    height: 600px;
   }
 }

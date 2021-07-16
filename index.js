@@ -1,23 +1,23 @@
-var ctx = document.getElementById("myChart");
-const labels = ["January", "February", "March", "April", "May", "June"];
-const data = {
-  labels: labels,
-  datasets: [
-    {
-      label: "My First Dataset",
-      data: [65, 59, 80, 81, 56, 55, 40],
-      fill: false,
-      borderColor: "rgb(75, 192, 192)",
-      tension: 0.1,
-    },
-  ],
-};
-const config = {
-  type: "line",
-  data: data,
-};
+// var ctx = document.getElementById("myChart");
+// const labels = ["January", "February", "March", "April", "May", "June"];
+// const data = {
+//   labels: labels,
+//   datasets: [
+//     {
+//       label: "My First Dataset",
+//       data: [65, 59, 80, 81, 56, 55, 40],
+//       fill: false,
+//       borderColor: "rgb(75, 192, 192)",
+//       tension: 0.1,
+//     },
+//   ],
+// };
+// const config = {
+//   type: "line",
+//   data: data,
+// };
 
-var myChart = new Chart(ctx, config);
+// var myChart = new Chart(ctx, config);
 // var month = new Array();
 // month[0] = "January";
 // month[1] = "February";
@@ -35,3 +35,23 @@ var myChart = new Chart(ctx, config);
 // var mon = month[dt.getMonth()];
 // console.log(mon);
 //<canvas id="myChart" width="50" height="50"></canvas>
+
+const globalConfirmed = document.getElementById("globalConfirmed");
+const allCases = document.getElementById("allCases");
+const globalRecovered = document.getElementById("globalRecovered");
+const globalDeaths = document.getElementById("globalDeaths");
+
+const getGlobalCoronaCases = () => {
+  instance.get("/summary").then(function (response) {
+    const res = response.data.Global;
+    const TotalConfirmed = res.TotalConfirmed;
+    const totalRecovered = res.TotalRecovered;
+    const totaldeaths = res.TotalDeaths;
+    globalConfirmed.innerHTML = TotalConfirmed;
+    allCases.innerHTML = TotalConfirmed;
+    globalRecovered.innerHTML = totalRecovered;
+    globalDeaths.innerHTML = totaldeaths;
+  });
+};
+
+getGlobalCoronaCases();
