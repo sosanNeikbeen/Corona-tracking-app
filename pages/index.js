@@ -7,9 +7,25 @@ const getData = () => {
   });
 };
 
+const changeDateFormat = (dates) => {
+  date = new Date(dates);
+  year = date.getFullYear();
+  month = date.getMonth() + 1;
+  dt = date.getDate();
+
+  if (dt < 10) {
+    dt = "0" + dt;
+  }
+  if (month < 10) {
+    month = "0" + month;
+  }
+  dates = year + "-" + month + "-" + dt;
+
+  return dates;
+};
+
 const createTable = (coronaData) => {
   const tbody = document.getElementById("tbody");
-  perPage = getResultPerPage(2);
   coronaData.map((el) => {
     const tr = document.createElement("tr");
     const td1 = document.createElement("td");
@@ -20,7 +36,8 @@ const createTable = (coronaData) => {
     const td6 = document.createElement("td");
     const td7 = document.createElement("td");
     td1.innerHTML = el.Country;
-    td2.innerHTML = el.Date;
+    const formatedDate = changeDateFormat(el.Date);
+    td2.innerHTML = formatedDate;
     td3.innerHTML = el.NewConfirmed;
     td4.innerHTML = el.NewDeaths;
     td5.innerHTML = el.TotalConfirmed;
