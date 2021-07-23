@@ -1,10 +1,45 @@
-let res;
+const pagination = {
+  page: 1,
+  resultPerPage: 5,
+};
+
+let data;
+const paginationElement = document.getElementById("pagination");
 
 const getData = () => {
   instance.get("/summary").then((response) => {
-    res = response.data.Countries;
-    createTable(res);
+    data = response.data.Countries;
+
+    const perPageData = getResultPerPage(pagination.page);
+    loadTable(perPageData);
+
+    const pageItem = createPagination();
+    paginationElement.insertAdjacentHTML("afterbegin", pageItem);
+    console.log(pageItem);
   });
+};
+
+// 1. Call getData function
+getData();
+
+const loadTable = (tableData) => {
+  const tableBody = document.getElementById("tbody");
+  let rows = "";
+
+  tableData.forEach((item) => {
+    let row = "<tr>";
+
+    row += `<td>${item.Country}</td>`;
+    row += `<td>${item.Date}</td>`;
+    row += `<td>${item.NewConfirmed}</td>`;
+    row += `<td>${item.NewDeaths}</td>`;
+    row += `<td>${item.TotalConfirmed}</td>`;
+    row += `<td>${item.TotalDeaths}</td>`;
+    row += `<td>${item.TotalRecovered}</td>`;
+    rows += row + "<tr>";
+  });
+
+  tableBody.innerHTML = rows;
 };
 
 const changeDateFormat = (dates) => {
@@ -24,39 +59,79 @@ const changeDateFormat = (dates) => {
   return dates;
 };
 
-const createTable = (coronaData) => {
-  const tbody = document.getElementById("tbody");
-  coronaData.map((el) => {
-    const tr = document.createElement("tr");
-    const td1 = document.createElement("td");
-    const td2 = document.createElement("td");
-    const td3 = document.createElement("td");
-    const td4 = document.createElement("td");
-    const td5 = document.createElement("td");
-    const td6 = document.createElement("td");
-    const td7 = document.createElement("td");
-    td1.innerHTML = el.Country;
-    const formatedDate = changeDateFormat(el.Date);
-    td2.innerHTML = formatedDate;
-    td3.innerHTML = el.NewConfirmed;
-    td4.innerHTML = el.NewDeaths;
-    td5.innerHTML = el.TotalConfirmed;
-    td6.innerHTML = el.TotalDeaths;
-    td7.innerHTML = el.TotalRecovered;
-    if (td3.innerHTML <= 1000) {
-      td3.className = " bg-green ";
-    } else {
-      td3.className = "bg-red ";
-    }
-    tr.appendChild(td1);
-    tr.appendChild(td2);
-    tr.appendChild(td3);
-    tr.appendChild(td4);
-    tr.appendChild(td5);
-    tr.appendChild(td6);
-    tr.appendChild(td7);
-    tbody.appendChild(tr);
+const getResultPerPage = (page) => {
+  const start = (page - 1) * pagination.resultPerPage;
+  const end = page * pagination.resultPerPage;
+  return data.slice(start, end);
+};
+
+const createPagination = () => {
+  const numOfPages = Math.ceil(data.length / pagination.resultPerPage);
+  console.log(numOfPages);
+
+  if (pagination.page === 1 && numOfPages > 1) {
+    return `<button type="button" class="btn btn-outline-light rounded-pill" disabled>
+    <i class="bi bi-arrow-left-circle"></i>
+    <span>page ${pagination.page - 1}</span>
+  </button> <button
+  type="button"
+  class="btn btn-outline-light rounded-circle active" disabled
+>
+  <span>${pagination.page} </span>
+</button> <button data-goto="${
+      pagination.page + 1
+    }" type="button" class="btn btn-outline-light rounded-pill">
+<span>page ${pagination.page + 1}</span>
+<i class="bi bi-arrow-right-circle"></i>
+</button> `;
+  }
+  if (pagination.page === numOfPages && numOfPages > 1) {
+    return `<button data-goto="${
+      pagination.page - 1
+    }" type="button" class="btn btn-outline-light rounded-pill" >
+    <i class="bi bi-arrow-left-circle"></i>
+    <span>page ${pagination.page - 1}</span>
+  </button> <button
+  type="button"
+  class="btn btn-outline-light rounded-circle" disabled
+>
+  <span>${pagination.page} </span>
+</button> <button type="button" class="btn btn-outline-light rounded-pill" disabled>
+<span>page ${pagination.page + 1}</span>
+<i class="bi bi-arrow-right-circle"></i>
+</button> `;
+  }
+  if (pagination.page < numOfPages) {
+    return `<button data-goto="${
+      pagination.page - 1
+    }" type="button" class="btn btn-outline-light rounded-pill">
+    <i class="bi bi-arrow-left-circle"></i>
+    <span>page ${pagination.page - 1}</span>
+  </button> <button
+  type="button"
+  class="btn btn-outline-light rounded-circle" disabled
+>
+  <span>${pagination.page} </span>
+</button> <button data-goto="${
+      pagination.page + 1
+    }" type="button" class="btn btn-outline-light rounded-pill">
+<span>page ${pagination.page + 1}</span>
+<i class="bi bi-arrow-right-circle"></i>
+</button> `;
+  }
+  return "";
+};
+
+const addClickHandler = () => {
+  paginationElement.addEventListener("click", (e) => {
+    const btn = e.target.closest(".btn");
+    if (!btn) return;
+
+    let goToPage = btn.dataset.goto;
+
+    const x = getResultPerPage(goToPage);
+    loadTable(x);
   });
 };
 
-getData();
+addClickHandler();
