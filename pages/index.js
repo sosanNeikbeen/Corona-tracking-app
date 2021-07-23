@@ -1,36 +1,33 @@
+const elements = {
+  table: document.getElementById("tbody"),
+  pagination: document.getElementById("pagination"),
+  searchInput: document.getElementById("search"),
+};
+
 const pagination = {
   page: 1,
-  resultPerPage: 5,
+  resultPerPage: 10,
 };
 
 let data;
-const paginationElement = document.getElementById("pagination");
-
-const getData = () => {
-  instance.get("/summary").then((response) => {
-    data = response.data.Countries;
-
-    const perPageData = getResultPerPage(pagination.page);
-    loadTable(perPageData);
-
-    const pageItem = createPagination();
-    paginationElement.insertAdjacentHTML("afterbegin", pageItem);
-    console.log(pageItem);
-  });
+const getData = async () => {
+  const response = await instance.get("/summary");
+  return response.data.Countries;
 };
 
-// 1. Call getData function
-getData();
-
 const loadTable = (tableData) => {
-  const tableBody = document.getElementById("tbody");
   let rows = "";
 
   tableData.forEach((item) => {
     let row = "<tr>";
 
     row += `<td>${item.Country}</td>`;
-    row += `<td>${item.Date}</td>`;
+    const date = new Date(item.Date).toLocaleString("en-US", {
+      day: "2-digit",
+      month: "long",
+      year: "2-digit",
+    });
+    row += `<td>${date}</td>`;
     row += `<td>${item.NewConfirmed}</td>`;
     row += `<td>${item.NewDeaths}</td>`;
     row += `<td>${item.TotalConfirmed}</td>`;
@@ -39,25 +36,58 @@ const loadTable = (tableData) => {
     rows += row + "<tr>";
   });
 
-  tableBody.innerHTML = rows;
+  elements.table.innerHTML = rows;
 };
 
-const changeDateFormat = (dates) => {
-  date = new Date(dates);
-  year = date.getFullYear();
-  month = date.getMonth() + 1;
-  dt = date.getDate();
-
-  if (dt < 10) {
-    dt = "0" + dt;
+let searchValue;
+const onSearch = (data) => {
+  searchValue = elements.searchInput.value;
+  searchValue = searchValue.toLowerCase();
+  if (searchValue) {
+    const filteredCountry = data.filter((el) => {
+      return el.Slug === searchValue;
+    });
+    loadTable(filteredCountry);
+  } else {
+    const perPageData = getResultPerPage(pagination.page);
+    loadTable(perPageData);
   }
-  if (month < 10) {
-    month = "0" + month;
-  }
-  dates = year + "-" + month + "-" + dt;
-
-  return dates;
 };
+
+const controller = async () => {
+  // 1. Call getData function
+  data = await getData();
+  const perPageData = getResultPerPage(pagination.page);
+  loadTable(perPageData);
+
+  const pageItem = createPagination();
+  elements.pagination.insertAdjacentHTML("afterbegin", pageItem);
+  // console.log(pageItem);
+
+  addClickHandler();
+  elements.searchInput.addEventListener("keypress", (event) => {
+    if (event.keyCode === 13 || event.which === 13) {
+      onSearch(data);
+    }
+  });
+};
+
+// const changeDateFormat = (dates) => {
+//   date = new Date(dates);
+//   year = date.getFullYear();
+//   month = date.getMonth() + 1;
+//   dt = date.getDate();
+
+//   if (dt < 10) {
+//     dt = "0" + dt;
+//   }
+//   if (month < 10) {
+//     month = "0" + month;
+//   }
+//   dates = year + "-" + month + "-" + dt;
+
+//   return dates;
+// };
 
 const getResultPerPage = (page) => {
   const start = (page - 1) * pagination.resultPerPage;
@@ -123,15 +153,16 @@ const createPagination = () => {
 };
 
 const addClickHandler = () => {
-  paginationElement.addEventListener("click", (e) => {
+  elements.pagination.addEventListener("click", (e) => {
     const btn = e.target.closest(".btn");
     if (!btn) return;
 
     let goToPage = btn.dataset.goto;
 
-    const x = getResultPerPage(goToPage);
-    loadTable(x);
+    const paginated = getResultPerPage(goToPage);
+    loadTable(paginated);
+    createPagination();
   });
 };
 
-addClickHandler();
+controller();
