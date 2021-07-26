@@ -2,6 +2,10 @@ const elements = {
   table: document.getElementById("tbody"),
   pagination: document.getElementById("pagination"),
   searchInput: document.getElementById("search"),
+  previousButton: document.querySelector(".prev"),
+  nextButton: document.querySelector(".nxt"),
+  pageNum: document.querySelector("#pageNum"),
+  sortDropdown: document.querySelector("#sortDropdown"),
 };
 
 const pagination = {
@@ -18,9 +22,13 @@ const getData = async () => {
 const loadTable = (tableData) => {
   let rows = "";
 
+  if (tableData.length === 0) {
+    let row = "<tr";
+    row += `<td >No data found</td>`;
+    rows += row + "<tr>";
+  }
   tableData.forEach((item) => {
     let row = "<tr>";
-
     row += `<td>${item.Country}</td>`;
     const date = new Date(item.Date).toLocaleString("en-US", {
       day: "2-digit",
@@ -28,7 +36,9 @@ const loadTable = (tableData) => {
       year: "2-digit",
     });
     row += `<td>${date}</td>`;
-    row += `<td>${item.NewConfirmed}</td>`;
+    row += `<td class=${item.NewConfirmed <= 1000 ? "bg-green" : "bg-red"}>${
+      item.NewConfirmed
+    }</td>`;
     row += `<td>${item.NewDeaths}</td>`;
     row += `<td>${item.TotalConfirmed}</td>`;
     row += `<td>${item.TotalDeaths}</td>`;
@@ -40,36 +50,84 @@ const loadTable = (tableData) => {
 };
 
 let searchValue;
-const onSearch = (data) => {
+const onSearch = () => {
   searchValue = elements.searchInput.value;
-  searchValue = searchValue.toLowerCase();
+  searchValue = searchValue.replace(/\s+/g, "-").toLowerCase();
   if (searchValue) {
     const filteredCountry = data.filter((el) => {
       return el.Slug === searchValue;
     });
     loadTable(filteredCountry);
+    elements.pagination.style.display = "none";
   } else {
     const perPageData = getResultPerPage(pagination.page);
     loadTable(perPageData);
+    elements.pagination.style.display = "block";
   }
 };
 
-const controller = async () => {
-  // 1. Call getData function
+const sortData = async () => {
+  let dropdownValue = elements.sortDropdown.value;
+  if (dropdownValue === "highestCase") {
+    data = data.sort((a, b) => b.NewConfirmed - a.NewConfirmed);
+    const perPageData = getResultPerPage(pagination.page);
+    return loadTable(perPageData);
+  }
+
+  if (dropdownValue === "lowestCase") {
+    data = data.sort((a, b) => a.NewConfirmed - b.NewConfirmed);
+    const perPageData = getResultPerPage(pagination.page);
+    return loadTable(perPageData);
+  }
+
   data = await getData();
   const perPageData = getResultPerPage(pagination.page);
   loadTable(perPageData);
+};
 
-  const pageItem = createPagination();
-  elements.pagination.insertAdjacentHTML("afterbegin", pageItem);
-  // console.log(pageItem);
+function handleNext() {
+  const numOfPages = Math.ceil(data.length / pagination.resultPerPage);
+  if (pagination.page === numOfPages) {
+    return;
+  }
+  pagination.page = pagination.page + 1;
 
-  addClickHandler();
+  const perPageData = getResultPerPage(pagination.page);
+  loadTable(perPageData);
+  elements.pageNum.innerHTML = pagination.page;
+}
+
+function handlePrevious() {
+  if (pagination.page === 1) {
+    return;
+  }
+
+  pagination.page = pagination.page - 1;
+  const perPageData = getResultPerPage(pagination.page);
+  loadTable(perPageData);
+  elements.pageNum.innerHTML = pagination.page;
+}
+
+const controller = async () => {
+  //Call getData function
+  data = await getData();
+  //show 10 results per page
+
+  const perPageData = getResultPerPage(pagination.page);
+  loadTable(perPageData);
+
+  //search country on keypress
   elements.searchInput.addEventListener("keypress", (event) => {
     if (event.keyCode === 13 || event.which === 13) {
-      onSearch(data);
+      onSearch();
     }
   });
+
+  elements.sortDropdown.addEventListener("change", (event) => {
+    sortData();
+  });
+  elements.previousButton.addEventListener("click", handlePrevious);
+  elements.nextButton.addEventListener("click", handleNext);
 };
 
 // const changeDateFormat = (dates) => {
@@ -93,76 +151,6 @@ const getResultPerPage = (page) => {
   const start = (page - 1) * pagination.resultPerPage;
   const end = page * pagination.resultPerPage;
   return data.slice(start, end);
-};
-
-const createPagination = () => {
-  const numOfPages = Math.ceil(data.length / pagination.resultPerPage);
-  console.log(numOfPages);
-
-  if (pagination.page === 1 && numOfPages > 1) {
-    return `<button type="button" class="btn btn-outline-light rounded-pill" disabled>
-    <i class="bi bi-arrow-left-circle"></i>
-    <span>page ${pagination.page - 1}</span>
-  </button> <button
-  type="button"
-  class="btn btn-outline-light rounded-circle active" disabled
->
-  <span>${pagination.page} </span>
-</button> <button data-goto="${
-      pagination.page + 1
-    }" type="button" class="btn btn-outline-light rounded-pill">
-<span>page ${pagination.page + 1}</span>
-<i class="bi bi-arrow-right-circle"></i>
-</button> `;
-  }
-  if (pagination.page === numOfPages && numOfPages > 1) {
-    return `<button data-goto="${
-      pagination.page - 1
-    }" type="button" class="btn btn-outline-light rounded-pill" >
-    <i class="bi bi-arrow-left-circle"></i>
-    <span>page ${pagination.page - 1}</span>
-  </button> <button
-  type="button"
-  class="btn btn-outline-light rounded-circle" disabled
->
-  <span>${pagination.page} </span>
-</button> <button type="button" class="btn btn-outline-light rounded-pill" disabled>
-<span>page ${pagination.page + 1}</span>
-<i class="bi bi-arrow-right-circle"></i>
-</button> `;
-  }
-  if (pagination.page < numOfPages) {
-    return `<button data-goto="${
-      pagination.page - 1
-    }" type="button" class="btn btn-outline-light rounded-pill">
-    <i class="bi bi-arrow-left-circle"></i>
-    <span>page ${pagination.page - 1}</span>
-  </button> <button
-  type="button"
-  class="btn btn-outline-light rounded-circle" disabled
->
-  <span>${pagination.page} </span>
-</button> <button data-goto="${
-      pagination.page + 1
-    }" type="button" class="btn btn-outline-light rounded-pill">
-<span>page ${pagination.page + 1}</span>
-<i class="bi bi-arrow-right-circle"></i>
-</button> `;
-  }
-  return "";
-};
-
-const addClickHandler = () => {
-  elements.pagination.addEventListener("click", (e) => {
-    const btn = e.target.closest(".btn");
-    if (!btn) return;
-
-    let goToPage = btn.dataset.goto;
-
-    const paginated = getResultPerPage(goToPage);
-    loadTable(paginated);
-    createPagination();
-  });
 };
 
 controller();
