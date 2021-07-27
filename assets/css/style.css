@@ -7,20 +7,8 @@
   position: relative;
 }
 
-.tabel-slider_area {
-  background-image: url(../images/slider-1.jpeg);
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  min-height: 1000px;
-  position: relative;
-}
 .slider {
   height: 700px;
-}
-
-.tabel-slider {
-  height: 1400px;
 }
 
 .slider_thumb {
@@ -238,6 +226,11 @@ h4 {
   font-size: 30px;
 }
 
+.page-number {
+  font-size: 20px;
+  color: white;
+}
+
 @keyframes rotation {
   from {
     transform: rotate(0deg);
@@ -253,8 +246,5 @@ h4 {
   }
   .slider {
     height: 1000px;
-  }
-  .tabel-slider {
-    height: 600px;
   }
 }

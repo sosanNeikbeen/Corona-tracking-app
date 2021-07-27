@@ -4,8 +4,9 @@ const elements = {
   searchInput: document.getElementById("search"),
   previousButton: document.querySelector(".prev"),
   nextButton: document.querySelector(".nxt"),
-  pageNum: document.querySelector("#pageNum"),
+  pageNum: document.querySelector(".page-number"),
   sortDropdown: document.querySelector("#sortDropdown"),
+  spinner: document.querySelector("#spinner"),
 };
 
 const pagination = {
@@ -30,12 +31,9 @@ const loadTable = (tableData) => {
   tableData.forEach((item) => {
     let row = "<tr>";
     row += `<td>${item.Country}</td>`;
-    const date = new Date(item.Date).toLocaleString("en-US", {
-      day: "2-digit",
-      month: "long",
-      year: "2-digit",
-    });
-    row += `<td>${date}</td>`;
+
+    const formatedDate = changeDateFormat(item.Date);
+    row += `<td>${formatedDate}</td>`;
     row += `<td class=${item.NewConfirmed <= 1000 ? "bg-green" : "bg-red"}>${
       item.NewConfirmed
     }</td>`;
@@ -85,7 +83,7 @@ const sortData = async () => {
   loadTable(perPageData);
 };
 
-function handleNext() {
+const handleNext = () => {
   const numOfPages = Math.ceil(data.length / pagination.resultPerPage);
   if (pagination.page === numOfPages) {
     return;
@@ -95,9 +93,9 @@ function handleNext() {
   const perPageData = getResultPerPage(pagination.page);
   loadTable(perPageData);
   elements.pageNum.innerHTML = pagination.page;
-}
+};
 
-function handlePrevious() {
+const handlePrevious = () => {
   if (pagination.page === 1) {
     return;
   }
@@ -106,11 +104,12 @@ function handlePrevious() {
   const perPageData = getResultPerPage(pagination.page);
   loadTable(perPageData);
   elements.pageNum.innerHTML = pagination.page;
-}
+};
 
 const controller = async () => {
   //Call getData function
   data = await getData();
+  elements.spinner.style.display = "none";
   //show 10 results per page
 
   const perPageData = getResultPerPage(pagination.page);
@@ -130,22 +129,22 @@ const controller = async () => {
   elements.nextButton.addEventListener("click", handleNext);
 };
 
-// const changeDateFormat = (dates) => {
-//   date = new Date(dates);
-//   year = date.getFullYear();
-//   month = date.getMonth() + 1;
-//   dt = date.getDate();
+const changeDateFormat = (dates) => {
+  date = new Date(dates);
+  year = date.getFullYear();
+  month = date.getMonth() + 1;
+  dt = date.getDate();
 
-//   if (dt < 10) {
-//     dt = "0" + dt;
-//   }
-//   if (month < 10) {
-//     month = "0" + month;
-//   }
-//   dates = year + "-" + month + "-" + dt;
+  if (dt < 10) {
+    dt = "0" + dt;
+  }
+  if (month < 10) {
+    month = "0" + month;
+  }
+  dates = year + "-" + month + "-" + dt;
 
-//   return dates;
-// };
+  return dates;
+};
 
 const getResultPerPage = (page) => {
   const start = (page - 1) * pagination.resultPerPage;

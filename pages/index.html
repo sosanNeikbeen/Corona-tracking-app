@@ -74,9 +74,7 @@
     </nav>
 
     <div class="slider_area" id="home">
-      <div
-        class="d-flex flex-column align-items-center justify-content-center pt-150"
-      >
+      <div class="d-flex flex-column align-items-center pt-150">
         <div class="rounded mx-auto d-block">
           <img
             class="rotate"
@@ -86,6 +84,7 @@
             alt=""
           />
         </div>
+        <h2 style="color: #fff">All Countries Data</h2>
         <div class="w-75 mt-3">
           <div class="card">
             <div class="card-body">
@@ -106,73 +105,33 @@
               </div>
 
               <div class="container">
-                <div class="row">
-                  <div class="col-sm-5 col-md-6 p-0">
-                    <div class="form-check form-check-inline">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="checkboxNoLabel"
-                        value=""
-                        aria-label="..."
-                        checked
-                      />
-                      <label class="form-check-label" for="inlineRadio1"
-                        >0 cases</label
+                <div class="d-flex justify-content-end">
+                  <div class="row">
+                    <div class="col-12">
+                      <label>Sort by</label>
+                      <select
+                        id="sortDropdown"
+                        class="selectpicker"
+                        data-style="btn-info"
                       >
-                    </div>
-                    <div class="form-check form-check-inline">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="checkboxNoLabel"
-                        value=""
-                        aria-label="..."
-                        checked
-                      />
-                      <label class="form-check-label" for="inlineRadio2"
-                        >>1000 cases</label
-                      >
-                    </div>
-                    <div class="form-check form-check-inline">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="checkboxNoLabel"
-                        value=""
-                        aria-label="..."
-                        checked
-                      />
-                      <label class="form-check-label" for="inlineRadio2"
-                        >2</label
-                      >
-                    </div>
-                  </div>
-                  <div class="col-sm-5 p-0 offset-sm-2 col-md-6 offset-md-0">
-                    <div class="d-flex justify-content-end">
-                      <div class="row">
-                        <div class="col-12">
-                          <label>Sort by</label>
-                          <select
-                            id="sortDropdown"
-                            class="selectpicker"
-                            data-style="btn-info"
-                          >
-                            <option value="all">All cases</option>
-                            <option value="highestCase">
-                              Highest to lowest cases
-                            </option>
-                            <option value="lowestCase">
-                              Lowest to heighest cases
-                            </option>
-                          </select>
-                        </div>
-                      </div>
+                        <option value="all">All cases</option>
+                        <option value="highestCase">
+                          Highest to lowest cases
+                        </option>
+                        <option value="lowestCase">
+                          Lowest to heighest cases
+                        </option>
+                      </select>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+        <div class="pt-3">
+          <div id="spinner" class="spinner-border text-light" role="status">
+            <span class="visually-hidden">Loading...</span>
           </div>
         </div>
 
@@ -197,7 +156,7 @@
           </div>
           <div id="pagination">
             <div
-              class="d-flex justify-content-between justify-content-end pt-3 border"
+              class="d-flex justify-content-between justify-content-end pt-3"
             >
               <button
                 type="button"
@@ -207,9 +166,7 @@
                 <span>Previous</span>
               </button>
 
-              <button type="button" class="btn btn-danger btn-sm px-3">
-                <i class="fas fa-times"></i>
-              </button>
+              <span class="pt-3 page-number"> 1</span>
               <button
                 data-goto=""
                 type="button"
