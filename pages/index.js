@@ -110,8 +110,8 @@ const controller = async () => {
   //Call getData function
   data = await getData();
   elements.spinner.style.display = "none";
-  //show 10 results per page
 
+  //show 10 results per page
   const perPageData = getResultPerPage(pagination.page);
   loadTable(perPageData);
 
